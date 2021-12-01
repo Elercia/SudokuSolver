@@ -263,7 +263,10 @@ struct Sudoku
                 }
                 else if (bitCount == 1)
                 {
-                    i8 number = (i8) log2(possibleValueAtPos & -possibleValueAtPos) + 1;  // gives the first bit set
+                    // gives the first bit set
+                    u16 tmp = possibleValueAtPos ^ (~-possibleValueAtPos);
+                    i8 number = (i8) std::popcount(tmp);  //(i8) log2(possibleValueAtPos & -possibleValueAtPos) +
+                                                                // 1;
                     SetValue(i, j, number);
 
                     hasChanges = true;
@@ -406,52 +409,55 @@ struct Sudoku
 
 int main()
 {
-    // clang-format off
-    Sudoku s = {
-    {
-    {0,0,9,     0,0,5,      0,1,0},
-    {0,8,5,     1,0,0,      3,4,0},
-    {0,0,7,     0,4,2,      0,0,8},
-
-    {0,5,0,     0,2,1,      8,6,0},
-    {0,0,6,     5,0,0,      2,0,0},
-    {8,0,0,     0,6,4,      5,9,0},
-
-    {0,0,0,     0,5,3,      0,0,0},
-    {4,0,0,     8,7,6,      1,3,5},
-    {0,0,0,     0,1,0,      0,0,0}
-    }
-    /*{
-    {0,0,0,     4,6,0,      0,7,1},
-    {7,0,0,     0,1,8,      0,0,0},
-    {0,0,6,     0,7,0,      0,0,0},
-
-    {0,0,0,     0,4,0,      7,3,0},
-    {0,8,0,     0,0,0,      2,4,0},
-    {4,2,0,     0,0,9,      0,0,0},
-
-    {0,6,8,     0,9,0,      0,0,4},
-    {0,0,5,     6,0,0,      0,1,0},
-    {0,0,2,     1,0,0,      0,5,0}
-    }*/
-    };
-    // clang-format on
-
-    Assert(s.IsValid());
+    bool solved = false;
+    bool bTest = true;
 
     Clock::time_point begin = Clock::now();
 
-    bool solved = s.Solve();
+    for (int tryNb = 0; tryNb < (bTest ? 1000000 : 1); tryNb++)
+    {
+        // clang-format off
+        Sudoku s = {
+        {
+        {0,0,9,     0,0,5,      0,1,0},
+        {0,8,5,     1,0,0,      3,4,0},
+        {0,0,7,     0,4,2,      0,0,8},
+
+        {0,5,0,     0,2,1,      8,6,0},
+        {0,0,6,     5,0,0,      2,0,0},
+        {8,0,0,     0,6,4,      5,9,0},
+
+        {0,0,0,     0,5,3,      0,0,0},
+        {4,0,0,     8,7,6,      1,3,5},
+        {0,0,0,     0,1,0,      0,0,0}
+        }
+        /*{
+        {0,0,0,     4,6,0,      0,7,1},
+        {7,0,0,     0,1,8,      0,0,0},
+        {0,0,6,     0,7,0,      0,0,0},
+
+        {0,0,0,     0,4,0,      7,3,0},
+        {0,8,0,     0,0,0,      2,4,0},
+        {4,2,0,     0,0,9,      0,0,0},
+
+        {0,6,8,     0,9,0,      0,0,4},
+        {0,0,5,     6,0,0,      0,1,0},
+        {0,0,2,     1,0,0,      0,5,0}
+        }*/
+        };
+        // clang-format on
+
+        Assert(s.IsValid());
+
+        solved = s.Solve();
+    }
 
     Clock::time_point end = Clock::now();
-
-    s.Print();
 
     auto durationMS = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
     auto durationNS = std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count();
 
-    std::cout << "Finished in " << (durationMS > 0 ? durationMS : durationNS) << (durationMS > 0 ? " ms" : " ns")
-              << "\nBlank values remaining : " << s.BlankValues() << std::endl;
+    std::cout << "Finished in " << (durationMS > 0 ? durationMS : durationNS) << (durationMS > 0 ? " ms" : " ns");
 
     return solved ? 0 : -1;
 }
