@@ -6,7 +6,7 @@
 
 using i8 = std::int16_t;
 using u16 = std::uint16_t;
-
+#ifdef APP_DEBUG
 #define Assert(x)                                                 \
     do                                                            \
     {                                                             \
@@ -17,6 +17,9 @@ using u16 = std::uint16_t;
             exit(-255);                                           \
         }                                                         \
     } while (false)
+#else
+#define Assert(X)
+#endif
 
 using Clock = std::chrono::high_resolution_clock;
 
@@ -30,7 +33,7 @@ bool HasPossibleValue(u16 possibleValues, i8 number)
 u16 RemovePossibleValue(u16 possibleValues, i8 number)
 {
     u16 result = possibleValues & ~(1 << (number - 1));
-    Assert(result != 0);
+    // Assert(result != 0);
     return result;
 }
 
