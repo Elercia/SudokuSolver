@@ -92,9 +92,10 @@ workspace "Sudokuuu"
 		filter "configurations:Debug"
 			runtime "Debug"
 			symbols "on"
+			defines {"APP_DEBUG"}
 
 		filter "configurations:Release"
 			runtime "Release"
-			optimize "on"
+			optimize "on"	
 		filter {}
 
