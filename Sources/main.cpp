@@ -50,6 +50,10 @@ struct Sudoku
         m_moves++;
         m_grid[i][j] = number;
         m_possibleValues[i][j] = 0;
+
+        RemovePossibleValuesForCol(j, number);
+        RemovePossibleValuesForLine(i, number);
+        RemovePossibleValuesForSection(i / 3, j / 3, number);
     }
 
     int LineContains(int line, i8 num)
@@ -355,13 +359,48 @@ struct Sudoku
 
     bool Solve()
     {
+        FillPossibleValues();
+
         do
         {
-            Print();
-            FillPossibleValues();
+            RemoveImpossiblePossibleValues();
+
         } while (ValidatePossibleValues());
 
         return IsFinito();
+    }
+
+    void RemovePossibleValuesForCol(int col, i8 number)
+    {
+        for (int line = 0; line < 9; line++)
+        {
+            auto& possibleValues = m_possibleValues[line][col];
+            possibleValues = RemovePossibleValue(possibleValues, number);
+        }
+    }
+
+    void RemovePossibleValuesForLine(int line, i8 number)
+    {
+        for (int col = 0; col < 9; col++)
+        {
+            auto& possibleValues = m_possibleValues[line][col];
+            possibleValues = RemovePossibleValue(possibleValues, number);
+        }
+    }
+
+    void RemovePossibleValuesForSection(int sectionLineId, int sectionColId, i8 number)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                int line = (sectionLineId * 3) + i;
+                int col = (sectionColId * 3) + j;
+
+                auto& possibleValues = m_possibleValues[line][col];
+                possibleValues = RemovePossibleValue(possibleValues, number);
+            }
+        }
     }
 };
 
