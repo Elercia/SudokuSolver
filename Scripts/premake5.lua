@@ -119,8 +119,8 @@ workspace "Sudokuuu"
 			sourcePath .. "/catch2/catch2.hpp",
 			sourcePath .. "/catch2/catch2.cpp",
 
-			sourcePath .. "/test/**.hpp",
-			sourcePath .. "/tests/tests.cpp",
+			sourcePath .. "/tests/*.hpp",
+			sourcePath .. "/tests/*.cpp",
 		}
 
 		includedirs
